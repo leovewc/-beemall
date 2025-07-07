@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head-fragment(title, path)">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Mall</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/mall/styles/header.css}">
+	<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
+    <link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{/mall/css/common.css}">
+    <link rel="stylesheet" th:href="@{'/mall/styles/'+${path}+'.css'}">
+	<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
+	<meta name="keywords" content="Car Mall, car-mall"/>
+	<meta name="description" content="car-mall"/>
+	
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<header id="header" th:fragment="header-fragment">
+    <div class="nav-container">
+        <a th:href="@{/index}" class="header-logo">Car<span>Some</span></a>
+        <ul class="header-navbar">
+            <li><a th:href="@{/index}" class="active">Home</a></li>
+            <li><a th:href="@{/about}">About</a></li>
+            <li><a th:href="@{/buy}">Buy</a></li>
+            <li>
+				<th:block th:if="${session.CarBMallUser==null}">
+	                <a href="#">Account <i class='bx bx-caret-down'></i></a>
+				</th:block>
+				
+				<th:block th:unless="${session.CarBMallUser==null}">
+					<a href="##" class="username">
+	                    <th:block th:text="${session.CarBMallUser.nickName}"></th:block>
+	                    <i class="iconfont icon-down"></i>
+	                </a>
+				</th:block>
+					
+                <div class="dropdown-menu account">
+					<th:block th:if="${session.CarBMallUser==null}">
+                    <ul>
+                        <li><a th:href="@{/login}">Buyer</a></li>
+                        <li><a th:href="@{/admin/login}">Admin</a></li>
+                    </ul>
+					</th:block>
+	
+					<th:block th:unless="${session.CarBMallUser==null}">
+		            	<div class="user">
+		                    <ul class="selector">
+		                       <li>
+		                           <a th:href="@{/personal}">
+		                               My Profile
+		                           </a>
+		                       </li>
+		                       <li>
+		                           <a th:href="@{/orders}">
+		                               My Order
+		                           </a>
+		                       </li>
+		                       <li>
+		                           <a th:href="@{/logout}">
+		                               Log out
+		                           </a>
+		                       </li>
+		                    </ul>
+		           		</div>
+					</th:block>
+                </div>
+            </li>
+			
+			<th:block th:unless="${session.CarBMallUser==null}">
+	            <li>    <a th:href="@{/shop-cart}" style="color: rgb(0, 0, 0);"><i class="iconfont icon-cart"></i>
+	                    cart(<th:block th:text="${session.CarBMallUser.shopCartItemCount}"></th:block>)</a>
+				</li>  
+				</th:block> 
+				
+				<th:block th:if="${session.CarBMallUser==null}">
+				         
+	             <div class="shopcart">
+	                 <a href="##" style="color:black;"><i class="iconfont icon-cart"></i>
+	                     cart(0)</a>
+	             </div>
+			</th:block>				
+			
+			<form action="#" th:action="@{/search}" method="get">
+				<input type="search" name="query" class="search-data" placeholder="Search here..." required>
+				<button type="submit" class="bx bx-search" id="search-icon"></button>
+			</form>
+    	</ul>	
+    </div>
+</header>
+</html>

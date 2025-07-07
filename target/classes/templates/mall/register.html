@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{mall/styles/login.css}">
+</head>
+
+<body>
+	<div class="form">
+		    <div class="login">
+		        <div class="login_center">
+		            <div class="login_top">
+		                <div class="left">Member Registration</div>
+		                <div class="right">Already have an account?&nbsp;<a href="login.html" target="_self">Please login</a></div>
+		                <div class="under-line"></div>
+		            </div>
+		            <form id="registerForm" onsubmit="return false;" action="##">
+		                <div class="login_main">
+		                    <div class="login-info">
+								<label for="loginName">Phone Number:</label>
+								<input class="login-info-input" type="text" name="loginName"
+		                               placeholder="Please enter your phone number" id="loginName"/>
+		                    </div>
+		                    <div class="login-info">
+								<label for="password">Password:</label>
+								<input class="login-info-input" type="password" name="password"
+		                               placeholder="Please enter your password" id="password"/>                                                       
+		                    </div>
+		                    <div class="login-info">
+		                        <label for="verifyCode">Verification:</label>
+								<input class="login-info-input verify-code" type="text" name="verifyCode" id="verifyCode"
+		                        		placeholder="Enter the code"/>
+		                        <img alt="Click to refresh!" style="float: right;" th:src="@{/common/mall/kaptcha}"
+		                        		onclick="this.src='/common/mall/kaptcha?d='+new Date()*1">
+		                    </div>
+		                </div>
+		                <div class="login_submit">
+		                    <input class="submit" type="submit" onclick="register()" value="Register Now">
+		                </div>
+		            </form>
+		        </div>
+		    </div>
+		</div>
+</body>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script type="text/javascript">
+
+    // Register button onclick event is set to register()
+    function register() {
+    var loginName = $("#loginName").val();
+    if (!loginName.trim()) {
+        Swal.fire({
+            text: "Please enter a login name (phone number)",
+            icon: "error",
+            iconColor: "#f05b72",
+        });
+        return false;
+    }
+    if (loginName.length < 9) {
+        Swal.fire({
+            text: "Login name (phone number) must in Malaysia",
+            icon: "error",
+            iconColor: "#f05b72",
+        });
+        return false;
+    }
+    if (loginName.length > 15) {
+        Swal.fire({
+            text: "Login name (phone number) must not exceed 15 characters",
+            icon: "error",
+            iconColor: "#f05b72",
+        });
+        return false;
+    }
+        var password = $("#password").val();
+        if (!validPassword(password)) {
+            Swal.fire({
+                text: "Please enter a valid password (6-20 characters with letters and numbers)",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return false;
+        }
+        var verifyCode = $("#verifyCode").val();
+        if (!validLength(verifyCode, 5)) {
+            Swal.fire({
+                text: "Please enter a valid verification code",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return false;
+        }
+        // Validation
+        var params = $("#registerForm").serialize();
+        var url = '/register';
+        $.ajax({
+            type: 'POST',// Method type
+            url: url,
+            data: params,
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    Swal.fire({
+                        title: "Registration Successful 🎉",
+                        text: "Would you like to go to the login page?",
+                        icon: "success",iconColor:"#1d953f",
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirm',
+                        cancelButtonText: 'Cancel'
+                    }).then((flag) => {
+                            if (flag.value) {
+                                window.location.href = '/login';
+                            }
+                        }
+                    )
+                    ;
+                } else {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                Swal.fire({
+                    text: 'Operation Failed 😞',
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    }
+</script>
+</html>

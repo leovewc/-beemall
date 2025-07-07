@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.carb.mall.dao.CarBMallCarsMapper">
+    <resultMap id="BaseResultMap" type="ltd.carb.mall.entity.CarBMallCars">
+        <id column="cars_id" jdbcType="BIGINT" property="carsId"/>
+        <result column="cars_name" jdbcType="VARCHAR" property="carsName"/>
+        <result column="cars_intro" jdbcType="VARCHAR" property="carsIntro"/>
+        <result column="cars_category_id" jdbcType="BIGINT" property="carsCategoryId"/>
+        <result column="cars_cover_img" jdbcType="VARCHAR" property="carsCoverImg"/>
+        <result column="cars_carousel" jdbcType="VARCHAR" property="carsCarousel"/>
+        <result column="original_price" jdbcType="INTEGER" property="originalPrice"/>
+        <result column="selling_price" jdbcType="INTEGER" property="sellingPrice"/>
+        <result column="stock_num" jdbcType="INTEGER" property="stockNum"/>
+        <result column="tag" jdbcType="VARCHAR" property="tag"/>
+        <result column="cars_sell_status" jdbcType="TINYINT" property="carsSellStatus"/>
+        <result column="create_user" jdbcType="INTEGER" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="ltd.carb.mall.entity.CarBMallCars">
+        <result column="cars_detail_content" jdbcType="LONGVARCHAR" property="carsDetailContent"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    cars_id, cars_name, cars_intro,cars_category_id, cars_cover_img, cars_carousel, original_price,
+    selling_price, stock_num, tag, cars_sell_status, create_user, create_time, update_user,
+    update_time
+  </sql>
+    <sql id="Blob_Column_List">
+    cars_detail_content
+  </sql>
+
+    <insert id="batchInsert">
+        INSERT INTO tb_carb_mall_cars_info(cars_name, cars_intro, cars_category_id,cars_cover_img,
+        cars_carousel,
+        cars_detail_content,original_price,
+        selling_price, stock_num)
+        VALUES
+        <foreach collection="carBMallCarsList" item="cars" separator=",">
+            (#{cars.carsName},#{cars.carsIntro},#{cars.carsCategoryId},#{cars.carsCoverImg},#{cars.carsCarousel},#{cars.carsDetailContent},#{cars.originalPrice},#{cars.sellingPrice},#{cars.stockNum})
+        </foreach>
+    </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_carb_mall_cars_info
+        where cars_id = #{carsId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByCategoryIdAndName" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_carb_mall_cars_info
+        where cars_name = #{carsName,jdbcType=VARCHAR} and cars_category_id = #{carsCategoryId,jdbcType=BIGINT}
+    </select>
+    <update id="updateStockNum">
+        <foreach collection="stockNumDTOS" item="stockNumDTO">
+            update tb_carb_mall_cars_info set stock_num = stock_num-#{stockNumDTO.carsCount}
+            where cars_id = #{stockNumDTO.carsId} and stock_num>=#{stockNumDTO.carsCount} and cars_sell_status = 0;
+        </foreach>
+    </update>
+    <update id="recoverStockNum">
+        <foreach collection="stockNumDTOS" item="stockNumDTO">
+            update tb_carb_mall_cars_info set stock_num = stock_num+#{stockNumDTO.carsCount}
+            where cars_id = #{stockNumDTO.carsId} and stock_num>=#{stockNumDTO.carsCount} and cars_sell_status = 0;
+        </foreach>
+    </update>
+    <update id="batchUpdateSellStatus">
+        update tb_carb_mall_cars_info
+        set cars_sell_status=#{sellStatus},update_time=now() where cars_id in
+        <foreach item="id" collection="orderIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <select id="findCarBMallCarsList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_carb_mall_cars_info
+        <where>
+            <if test="carsName!=null and carsName!=''">
+                and cars_name like CONCAT('%','#{carsName}','%')
+            </if>
+            <if test="carsSellStatus!=null and carsSellStatus!=''">
+                and cars_sell_status = #{carsSellStatus}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and create_time &lt; #{endTime}
+            </if>
+        </where>
+        order by cars_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="findCarBMallCarsListBySearch" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_carb_mall_cars_info
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (cars_name like CONCAT('%',#{keyword},'%') or cars_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="carsCategoryId!=null and carsCategoryId!=''">
+                and cars_category_id = #{carsCategoryId}
+            </if>
+            <if test="carsSellStatus!=null">
+                and cars_sell_status = #{carsSellStatus}
+            </if>
+        </where>
+        <if test="orderBy!=null and orderBy!=''">
+            <choose>
+                <when test="orderBy == 'new'">
+                    order by cars_id desc
+                </when>
+                <when test="orderBy == 'price'">
+                    order by selling_price asc
+                </when>
+                <otherwise>
+                    order by stock_num desc
+                </otherwise>
+            </choose>
+        </if>
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalCarBMallCarsBySearch" parameterType="Map" resultType="int">
+        select count(*) from tb_carb_mall_cars_info
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (cars_name like CONCAT('%',#{keyword},'%') or cars_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="carsCategoryId!=null and carsCategoryId!=''">
+                and cars_category_id = #{carsCategoryId}
+            </if>
+            <if test="carsSellStatus!=null">
+                and cars_sell_status = #{carsSellStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByPrimaryKeys" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_carb_mall_cars_info
+        where cars_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by field(cars_id,
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        );
+    </select>
+    <select id="getTotalCarBMallCars" parameterType="Map" resultType="int">
+        select count(*) from tb_carb_mall_cars_info
+        <where>
+            <if test="carsName!=null and carsName!=''">
+                and cars_name like CONCAT('%','#{carsName}','%')
+            </if>
+            <if test="carsSellStatus!=null and carsSellStatus!=''">
+                and cars_sell_status = #{carsSellStatus}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and create_time &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_carb_mall_cars_info
+    where cars_id = #{carsId,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="ltd.carb.mall.entity.CarBMallCars">
+    insert into tb_carb_mall_cars_info (cars_id, cars_name, cars_intro,
+      cars_cover_img, cars_carousel, original_price,
+      selling_price, stock_num, tag, 
+      cars_sell_status, create_user, create_time,
+      update_user, update_time, cars_detail_content
+      )
+    values (#{carsId,jdbcType=BIGINT}, #{carsName,jdbcType=VARCHAR}, #{carsIntro,jdbcType=VARCHAR},
+      #{carsCoverImg,jdbcType=VARCHAR}, #{carsCarousel,jdbcType=VARCHAR}, #{originalPrice,jdbcType=INTEGER},
+      #{sellingPrice,jdbcType=INTEGER}, #{stockNum,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR}, 
+      #{carsSellStatus,jdbcType=TINYINT}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{carsDetailContent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="ltd.carb.mall.entity.CarBMallCars">
+        insert into tb_carb_mall_cars_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carsId != null">
+                cars_id,
+            </if>
+            <if test="carsName != null">
+                cars_name,
+            </if>
+            <if test="carsIntro != null">
+                cars_intro,
+            </if>
+            <if test="carsCategoryId != null">
+                cars_category_id,
+            </if>
+            <if test="carsCoverImg != null">
+                cars_cover_img,
+            </if>
+            <if test="carsCarousel != null">
+                cars_carousel,
+            </if>
+            <if test="originalPrice != null">
+                original_price,
+            </if>
+            <if test="sellingPrice != null">
+                selling_price,
+            </if>
+            <if test="stockNum != null">
+                stock_num,
+            </if>
+            <if test="tag != null">
+                tag,
+            </if>
+            <if test="carsSellStatus != null">
+                cars_sell_status,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="carsDetailContent != null">
+                cars_detail_content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carsId != null">
+                #{carsId,jdbcType=BIGINT},
+            </if>
+            <if test="carsName != null">
+                #{carsName,jdbcType=VARCHAR},
+            </if>
+            <if test="carsIntro != null">
+                #{carsIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="carsIntro != null">
+                #{carsCategoryId,jdbcType=BIGINT},
+            </if>
+            <if test="carsCoverImg != null">
+                #{carsCoverImg,jdbcType=VARCHAR},
+            </if>
+            <if test="carsCarousel != null">
+                #{carsCarousel,jdbcType=VARCHAR},
+            </if>
+            <if test="originalPrice != null">
+                #{originalPrice,jdbcType=INTEGER},
+            </if>
+            <if test="sellingPrice != null">
+                #{sellingPrice,jdbcType=INTEGER},
+            </if>
+            <if test="stockNum != null">
+                #{stockNum,jdbcType=INTEGER},
+            </if>
+            <if test="tag != null">
+                #{tag,jdbcType=VARCHAR},
+            </if>
+            <if test="carsSellStatus != null">
+                #{carsSellStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carsDetailContent != null">
+                #{carsDetailContent,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="ltd.carb.mall.entity.CarBMallCars">
+        update tb_carb_mall_cars_info
+        <set>
+            <if test="carsName != null">
+                cars_name = #{carsName,jdbcType=VARCHAR},
+            </if>
+            <if test="carsIntro != null">
+                cars_intro = #{carsIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="carsCategoryId != null">
+                cars_category_id = #{carsCategoryId,jdbcType=BIGINT},
+            </if>
+            <if test="carsCoverImg != null">
+                cars_cover_img = #{carsCoverImg,jdbcType=VARCHAR},
+            </if>
+            <if test="carsCarousel != null">
+                cars_carousel = #{carsCarousel,jdbcType=VARCHAR},
+            </if>
+            <if test="originalPrice != null">
+                original_price = #{originalPrice,jdbcType=INTEGER},
+            </if>
+            <if test="sellingPrice != null">
+                selling_price = #{sellingPrice,jdbcType=INTEGER},
+            </if>
+            <if test="stockNum != null">
+                stock_num = #{stockNum,jdbcType=INTEGER},
+            </if>
+            <if test="tag != null">
+                tag = #{tag,jdbcType=VARCHAR},
+            </if>
+            <if test="carsSellStatus != null">
+                cars_sell_status = #{carsSellStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="carsDetailContent != null">
+                cars_detail_content = #{carsDetailContent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where cars_id = #{carsId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="ltd.carb.mall.entity.CarBMallCars">
+    update tb_carb_mall_cars_info
+    set cars_name = #{carsName,jdbcType=VARCHAR},
+      cars_intro = #{carsIntro,jdbcType=VARCHAR},
+      cars_cover_img = #{carsCoverImg,jdbcType=VARCHAR},
+      cars_carousel = #{carsCarousel,jdbcType=VARCHAR},
+      original_price = #{originalPrice,jdbcType=INTEGER},
+      selling_price = #{sellingPrice,jdbcType=INTEGER},
+      stock_num = #{stockNum,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      cars_sell_status = #{carsSellStatus,jdbcType=TINYINT},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      cars_detail_content = #{carsDetailContent,jdbcType=LONGVARCHAR}
+    where cars_id = #{carsId,jdbcType=BIGINT}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="ltd.carb.mall.entity.CarBMallCars">
+    update tb_carb_mall_cars_info
+    set cars_name = #{carsName,jdbcType=VARCHAR},
+      cars_intro = #{carsIntro,jdbcType=VARCHAR},
+      cars_cover_img = #{carsCoverImg,jdbcType=VARCHAR},
+      cars_carousel = #{carsCarousel,jdbcType=VARCHAR},
+      original_price = #{originalPrice,jdbcType=INTEGER},
+      selling_price = #{sellingPrice,jdbcType=INTEGER},
+      stock_num = #{stockNum,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      cars_sell_status = #{carsSellStatus,jdbcType=TINYINT},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where cars_id = #{carsId,jdbcType=BIGINT}
+  </update>
+</mapper>

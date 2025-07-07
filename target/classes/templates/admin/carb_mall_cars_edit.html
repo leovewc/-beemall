@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:replace="admin/header::header-fragment"></header>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <div th:replace="admin/header::header-nav"></div>
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+            </div>
+        </div>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">Product Information Editing</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="carsForm" onsubmit="return false;">
+                            <div class="form-group" style="display:flex;">
+                                <label class="control-label">Please select a category:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                <select class="form-control col-sm-3" id="levelOne"
+                                        data-placeholder="Please select a category...">
+                                    <th:block th:unless="${null == firstLevelCategories}">
+                                        <th:block th:each="c : ${firstLevelCategories}">
+                                            <option th:value="${c.categoryId}" th:text="${c.categoryName}"
+                                                    th:selected="${null !=firstLevelCategoryId and firstLevelCategoryId==c.categoryId} ?true:false">
+                                                >
+                                            </option>
+                                        </th:block>
+                                    </th:block>
+                                </select>&nbsp;
+                                <select class="form-control col-sm-3"
+                                        id="levelTwo"
+                                        data-placeholder="Please select a category...">
+                                    <th:block th:unless="${null == secondLevelCategories}">
+                                        <th:block th:each="c : ${secondLevelCategories}">
+                                            <option th:value="${c.categoryId}" th:text="${c.categoryName}"
+                                                    th:selected="${null !=secondLevelCategoryId and secondLevelCategoryId==c.categoryId} ?true:false">
+                                                >
+                                            </option>
+                                        </th:block>
+                                    </th:block>
+                                </select>&nbsp;
+                                <select class="form-control col-sm-3"
+                                        id="levelThree"
+                                        data-placeholder="Please select a category...">
+                                    <th:block th:unless="${null == thirdLevelCategories}">
+                                        <th:block th:each="c : ${thirdLevelCategories}">
+                                            <option th:value="${c.categoryId}" th:text="${c.categoryName}"
+                                                    th:selected="${null !=thirdLevelCategoryId and thirdLevelCategoryId==c.categoryId} ?true:false">
+                                                >
+                                            </option>
+                                        </th:block>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="hidden" id="carsId" name="carsId"
+                                       th:value="${cars!=null and cars.carsId!=null }?${cars.carsId}: 0">
+                                <input type="text" class="form-control col-sm-6" id="carsName" name="carsName"
+                                       placeholder="*Please enter the product name (required)"
+                                       th:value="${cars!=null and cars.carsName!=null }?${cars.carsName}: ''"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="text" class="form-control col-sm-6" id="carsIntro" name="carsIntro"
+                                       placeholder="*Please enter a product description (within 100 words)"
+                                       th:value="${cars!=null and cars.carsIntro!=null }?${cars.carsIntro}: ''"
+                                       required="true">
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="number" class="form-control col-sm-6" id="originalPrice"
+                                       name="originalPrice"
+                                       placeholder="*Please enter the product price"
+                                       th:value="${cars!=null and cars.originalPrice!=null }?${cars.originalPrice}: 1"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="number" class="form-control col-sm-6" id="sellingPrice"
+                                       name="sellingPrice"
+                                       placeholder="*Please enter the selling price"
+                                       th:value="${cars!=null and cars.sellingPrice!=null }?${cars.sellingPrice}: 1"
+                                       required="true">
+                            </div>
+                            <div class="form-group" style="display:flex;">
+                                <input type="number" class="form-control col-sm-6" id="stockNum" name="stockNum"
+                                       placeholder="*Please enter the product stock number"
+                                       th:value="${cars!=null and cars.stockNum!=null }?${cars.stockNum}: 0"
+                                       required="true">
+                                &nbsp;&nbsp;
+                                <input type="text" class="form-control col-sm-6" id="tag" name="tag"
+                                       placeholder="*Please enter product tags"
+                                       th:value="${cars!=null and cars.tag!=null }?${cars.tag}: ''"
+                                       required="true">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Shelf status:&nbsp;</label>
+                                <input name="carsSellStatus" type="radio" id="carsSellStatusTrue" checked=true
+                                       th:checked="${null==cars||(null !=cars and null !=cars.carsSellStatus and cars.carsSellStatus==0)} ?true:false"
+                                       value="0"/>&nbsp;On shelf&nbsp;
+                                <input name="carsSellStatus" type="radio" id="carsSellStatusFalse" value="1"
+                                       th:checked="${null !=cars and null !=cars.carsSellStatus and cars.carsSellStatus==1} ?true:false"/>&nbsp;Off shelf&nbsp;
+                            </div>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <th:block th:if="${null == cars}">
+                                            <img id="carsCoverImg" src="/admin/dist/img/img-upload.png"
+                                                 style="height: 64px;width: 64px;">
+                                        </th:block>
+                                        <th:block th:unless="${null == cars}">
+                                            <img id="carszCoverImg" th:src="${cars.carsCoverImg}"
+                                                 style="width:160px ;height: 160px;display:block;">
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <button class="btn btn-info" style="margin-bottom: 5px;"
+                                                id="uploadcarsCoverImg">
+                                            <i class="fa fa-picture-o"></i>&nbsp;Upload product main image
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" style="border: 1px solid #ccc;z-index: 1100;">
+                                <div id="editor-toolbar" class="editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
+                                <input type="hidden" class="editor-text" th:value="${cars!=null and cars.carsDetailContent !=null}?${cars.carsDetailContent}: ''">
+                                <div id="editor-text-area" class="editor-text-area" style="height: 750px"></div>
+                            </div>
+                            <div class="form-group">
+                                &nbsp;<button class="btn btn-info float-right" style="margin-left: 5px;"
+                                              id="saveButton">Save Product
+                            </button>&nbsp;
+                                &nbsp;<button class="btn btn-secondary float-right" style="margin-left: 5px;"
+                                              id="cancelButton">Return to product list
+                            </button>&nbsp;
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="admin/footer::footer-fragment"></div>
+</div>
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script th:src="@{/admin/plugins/ajaxupload/ajaxupload.js}"></script>
+<script th:src="@{/admin/plugins/wangeditor-5.1.23/index.js}"></script>
+<script th:src="@{/admin/dist/js/public.js}"></script>
+<script th:src="@{/admin/dist/js/carb_mall_cars_edit.js}"></script>
+</body>
+</html>

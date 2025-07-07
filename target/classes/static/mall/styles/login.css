@@ -1,0 +1,109 @@
+body {
+/*     background: #14212a; */
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+/*     align-items: center; */
+	font-family: Microsoft Yahei;
+}
+
+.form .login {
+/*     width: 400px; */
+/*     height: 470px; */
+    padding: 30px;
+    margin: 30px auto;
+    background: #444;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.form .login .login_center .login_top .left {
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.form .login .login_center .login_top .right {
+    height: 30px;
+    line-height: 15px;
+    font-size: 13px;
+	display: flex;
+    justify-content: center;
+/*     float: right; */
+/*     clear: both; */
+}
+
+.form .login .login_center .login_top .right a {
+    color: #1baeae;
+    font-weight: bold;
+	text-decoration: none;
+}
+
+.form .login .login_center .login_top .right a:hover {
+    color: #53cdcd;
+}
+
+.form .login .login_center .login_top .under-line {
+    height: 2px;
+    background: #1baeae;
+    margin: 8px 0;
+    clear: both;
+}
+
+.form .login .login_center .login_main {
+    padding: 0 0 5px;
+}
+
+/* .form .login .login_center .login_main input:focus { */
+/*     border: 1px solid #1baeae; */
+/* } */
+
+.form .login .login_center .login-info {
+    height: 40px;
+    line-height: 40px;
+    margin: 40px 0;
+}
+
+.form .login .login_center .login-info .login-info-input {
+    width: 220px;
+    height: 30px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    float: right;
+    margin-left: 10px;
+}
+
+.form .login .login_center .login-info .verify-code {
+    width: 100px;
+    height: 30px;
+    padding: 5px 10px;
+}
+
+/* .form .login .login_center .login-info .send { */
+/*     width: 100px; */
+/*     height: 42px; */
+/*     margin-left: 12px; */
+/* } */
+
+.form .login .login_center .login_submit .submit {
+    border: none;
+	padding: 10px 15px;
+    background: #1baeae;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+/*     letter-spacing: 2px; */
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.form .login .login_center .login_submit .submit:hover {
+    background-color: #53cdcd;
+}

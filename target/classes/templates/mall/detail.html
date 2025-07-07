@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="mall/header::head-fragment('CarB Mall - Car Details','detail')">
+</head>
+<body>
+<header th:replace="mall/header::header-fragment"></header>
+
+<div id="detail">
+    <!-- nav -->
+<!--    <nav th:replace="mall/header::nav-fragment"></nav>-->
+
+    <div class="dc">
+        <div class="content w">
+            <div class="title fl">Car Details</div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="intro mt20 w clearfix">
+        <div class="left fl" style="position: relative;">
+            <div class="swiper-container fl">
+                <img th:src="@{${carsDetail.carsCoverImg}}">
+            </div>
+        </div>
+        <div class="right fr">
+            <div class="h3 ml30 mt20" th:text="${carsDetail.carsName}">CarBMall</div>
+            <div class="sub_title mr40 ml20 mt10" th:text="${carsDetail.carsIntro}">CarBMall</div>
+			<div class="quantity mr40 ml30 mt20" th:text="'*'+'Stock Available: '+ ${carsDetail.stockNum}"data-stock="${carsDetail.stockNum}">CarBMall</div>
+            <div class="item_price mr40 ml20 mt10">
+                <th:block th:text="${carsDetail.sellingPrice}+'.00 $'"></th:block>
+                <del>
+                    <th:block th:text="${carsDetail.originalPrice}+'.00 $'"></th:block>
+                </del>
+            </div>
+
+            <div class="order">
+                <input class="car" type="button" th:onclick="'saveAndGoCart('+${carsDetail.carsId}+','+${carsDetail.stockNum}+')'" value="Buy Now"/>
+                <input class="car" type="button" th:onclick="'saveToCart('+${carsDetail.carsId}+','+${carsDetail.stockNum}+')'" value="Add to Cart" style="background: rgb(255, 255, 255);color: #ffcc00;"/>
+            </div>
+            <div class="tb-extra ml20" id="J_tbExtra">
+                <dl>
+                    <dt>Promise:</dt>
+                    <dd><a class="J_Cont" title="If the request for a 7-day no-reason return is met, the buyer needs to bear the return shipping fee for free shipping items. Non-free shipping items require the buyer to bear the shipping and return shipping fees." href="#"
+                           target="_blank">
+<!--						   <img th:src="@{/mall/image/7d.jpg}">-->
+						   7-Day No Reason Return</a></dd>
+                </dl>
+                <dl>
+                    <dt>Payment:</dt>
+                    <dd><a href="##" target="_blank">
+<!--						<img th:src="@{/mall/image/hua.png}">-->
+						Ambank Credit Pay</a>
+<!--						<a href="##"-->
+<!--                                                                                                               target="_blank">-->
+<!--																											   <img-->
+<!--                            th:src="@{/mall/image/card.png}">Credit Card Payment</a><a href="##" target="_blank"><img-->
+<!--                            th:src="@{/mall/image/ji.png}">Points Pay-->
+<!--							</a>--></dd>
+						
+                </dl>
+                <dl>
+                    <dt>Support:</dt>
+                    <dd>Trade-in and save more. <a style="float:none;text-decoration: underline;" href="##">Details</a></dd>
+                </dl>
+
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+<!--     Use th:utext to parse HTML content, not th:text -->
+<!--    <div class="cars mt20 w clearfix" th:utext="${carsDetail.carsDetailContent}">-->
+<!--    </div>-->
+</div>
+
+<div th:replace="mall/footer"></div>
+
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+<script type="text/javascript">
+    /**
+     * Add to cart
+     */
+    function saveToCart(id,stockNum) {
+		if (stockNum <= 0) {
+		            Swal.fire({
+		                title: "Insufficient stock available!",
+		                icon: "error",
+		                iconColor: "#f05b72",
+		            });
+		            return; // Exit the function if no stock
+		        }
+        var carsCount = 1;
+        var data = {
+            "carsId": id,
+            "carsCount": carsCount
+        };
+		
+			
+        $.ajax({
+            type: 'POST',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    Swal.fire({
+                        title: "Confirmation",
+                        text: "Added Successfully",
+                        icon: "success",iconColor:"#1d953f",
+                        showCancelButton: true,
+                        confirmButtonText: 'Confirm',
+                        cancelButtonText: 'Cancel'
+                    }).then((flag) => {
+                           if (flag.value) {
+                                window.location.reload();
+                            }
+                        }
+                    );
+                } else {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    text: "Operation Failed",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    }
+
+    /**
+     * Add to cart and go to cart page
+     */
+    function saveAndGoCart(id,stockNum) {
+		if (stockNum <= 0) {
+		          Swal.fire({
+					  title: "Insufficient stock available!",
+		              icon: "error",
+		              iconColor: "#f05b72",
+		          });
+		          return; // Exit the function if no stock
+		      }
+        var carsCount = 1;
+        var data = {
+            "carsId": id,
+            "carsCount": carsCount
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    Swal.fire({
+                        title: "Confirmation",
+                        text: "Item added to cart",
+                        icon: "success",iconColor:"#1d953f",
+                        showCancelButton: true,
+                        confirmButtonText: 'Go to Cart',
+                        cancelButtonText: 'Stay on this page'
+                    }).then((flag) => {
+                            if (flag.value) {
+                                window.location.href = '/shop-cart';
+                            }
+                        }
+                    );
+                } else {
+                    Swal.fire({
+                        text: result.message,
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    text: "Operation Failed",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

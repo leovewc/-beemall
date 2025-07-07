@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="mall/header::head-fragment('CarB Mall - Select Payment Method','pay-select')">
+</head>
+<body>
+<div class="page-main">
+    <div class="container confirm-box">
+        <form target="_blank" action="#" id="J_payForm" method="post">
+            <div class="section section-order">
+                <div class="order-info clearfix">
+                    <div class="fl">
+                        <h2 class="title">Order Submitted Successfully! Let's Pay~ 😎</h2>
+                        <input type="hidden" id="orderNoValue" th:value="${orderNo}">
+                        <p class="order-time" id="J_deliverDesc">Order Number：
+                            <th:block th:text="${orderNo}"></th:block>
+                        </p>
+                    </div>
+                    <div class="fr">
+                        <p class="total">
+                            Total Amount Due: <span class="money"><em><th:block
+                                th:text="${totalPrice+'.00'}"></th:block></em> $</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="section section-payment">
+                <div class="cash-title" id="J_cashTitle">
+                    Our boss paid for you, continue to buy 🤩🤩
+                </div>
+            </div>
+
+            <div class="actions">
+                <a id="returnHomeButton1" class="btn btn-small btn-primary" title="Return to home" th:href="@{/index}">Home</a>
+            </div>
+
+        <!-- jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+     <script type="text/javascript">
+        $(document).ready(function() {
+            Swal.fire({
+                text: "Our boss had paid for you, continue to buy and return to home page 🤩",
+                icon: "info",
+                iconColor: "#1baeae",
+                showCancelButton: true,
+                confirmButtonText: "home",
+                confirmButtonColor: "#1baeae",
+                cancelButtonText: "cancel",
+                cancelButtonColor: "#d33"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../index';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

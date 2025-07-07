@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CarB Mall - Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{mall/css/iconfont.css}">
+    <link rel="stylesheet" th:href="@{mall/css/common.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/cart.css}">
+    <link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
+</head>
+<body>
+
+<div id="cart">
+    <div class="banner_x center">
+        <a th:href="@{/index}" target="_blank">
+            <div class="logo fl">
+                <img src="mall/image/new-bee-logo-3.png"/>
+            </div>
+        </a>
+
+        <div class="wdgwc fl ml20">Shopping Cart</div>
+        <div class="wxts fl ml20">Kindly Reminder: The success of the purchase depends on the final order. Please settle as soon as possible!</div>
+        <div class="clear"></div>
+    </div>
+    <div class="cart_line"></div>
+    <div class="cart_bg">
+        <th:block th:if="${#lists.isEmpty(myShoppingCartItems)}">
+            <div class="list center">
+<!--                <img style="position: absolute;margin-top: 16px;left: 45%;" th:src="@{/mall/image/null-content.png}">-->
+            </div>
+        </th:block>
+        <th:block th:unless="${#lists.isEmpty(myShoppingCartItems)}">
+            <div class="list center">
+                <div class="top2 center">
+                    <div class="sub_top fl">
+                    </div>
+                    <div class="sub_top fl">Car Name</div>
+                    <div class="sub_top fl">Unit Price</div>
+                    <div class="sub_top fl">Quantity</div>
+                    <div class="sub_top fl">Subtotal</div>
+                    <div class="sub_top fr">Operation</div>
+                    <div class="clear"></div>
+                </div>
+                <th:block th:each="item : ${myShoppingCartItems}">
+                    <div class="content2 center">
+                        <div class="sub_content fl ">
+                        </div>
+                        <div class="sub_content cover fl"><img th:src="@{${item.carsCoverImg}}"></div>
+                        <div class="sub_content fl ft20" th:text="${item.carsName}">Car Name</div>
+                        <div class="sub_content fl" th:text="${item.sellingPrice+'$'}">1299$</div>
+                        <div class="sub_content fl">
+                            <input class="cars_count" th:id="${'carsCount'+item.cartItemId}" type="number"
+                                   th:onblur="'updateItem('+${item.cartItemId}+')'"
+                                   th:value="${item.carsCount}" step="1" min="1"
+                                   max="5">
+                        </div>
+                        <div class="sub_content fl" th:text="${item.carsCount*item.sellingPrice+'$'}">1299$</div>
+                        <div class="sub_content fl"><a href="##" th:onclick="'deleteItem('+${item.cartItemId}+')'">×</a>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </th:block>
+            </div>
+        </th:block>
+        <div class="pre_order mt20 center">
+            <div class="tips fl ml20">
+                <ul>
+                    <li><a th:href="@{/index}">Continue Shopping</a></li>
+                    <li>|</li>
+                    <li>Total <span th:text="${itemsTotal}">13</span> items</li>
+                    <div class="clear"></div>
+                </ul>
+            </div>
+            <div class="order_div fr">
+                <div class="order_total fl">Total (excluding shipping): <span th:text="${priceTotal}+'.00$'">1299.00$</span></div>
+                <div class="order_button fr">
+                    <th:block th:if="${itemsTotal == 0}">
+                        <input class="order_button_c" type="button" name="tip"
+                               onclick="tip()"
+                               value="Checkout"/>
+                    </th:block>
+                    <th:block th:unless="${itemsTotal == 0}">
+                        <input class="order_button_d" type="button" name="settle"
+                               onclick="settle()"
+                               value="Checkout"/>
+                    </th:block>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+<div th:replace="mall/footer"></div>
+
+</body>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script type="text/javascript">
+
+    /**
+     * Prompt when the quantity in the shopping cart is 0
+     */
+    function tip() {
+        Swal.fire({
+            text: "No data in the shopping cart, unable to checkout",
+            icon: "error",iconColor:"#f05b72",
+        });
+    }
+
+    /**
+     * Redirect to the checkout page
+     */
+    function settle() {
+        window.location.href = '/shop-cart/settle'
+    }
+
+    /**
+     * Update cart item
+     */
+    function updateItem(id) {
+        var domId = 'carsCount' + id;
+        var carsCount = $("#" + domId).val();
+        if (carsCount > 5) {
+            Swal.fire({
+                text: "You can purchase up to 5 units of a single item",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        if (carsCount < 1) {
+            Swal.fire({
+                text: "Quantity error",
+                icon: "error",iconColor:"#f05b72",
+            });
+            return;
+        }
+        var data = {
+            "cartItemId": id,
+            "carsCount": carsCount
+        };
+        $.ajax({
+            type: 'PUT',
+            url: '/shop-cart',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        text: "Operation Failed",
+                        icon: "error",iconColor:"#f05b72",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    text: "Operation Failed",
+                    icon: "error",iconColor:"#f05b72",
+                });
+            }
+        });
+    }
+
+    /**
+     * Delete cart item
+     * @param id
+     */
+    function deleteItem(id) {
+        Swal.fire({
+            title: "Confirmation",
+            text: "Are you sure you want to delete this item?",
+            icon: "warning",iconColor:"#dea32c",
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel'
+        }).then((flag) => {
+                if (flag.value) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/shop-cart/' + id,
+                        success: function (result) {
+                            if (result.resultCode == 200) {
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    text: "Operation Failed",
+                                    icon: "error",iconColor:"#f05b72",
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                text: "Operation Failed",
+                                icon: "error",iconColor:"#f05b72",
+                            });
+                        }
+                    });
+                }
+            }
+        );
+    }
+</script>
+</html>
