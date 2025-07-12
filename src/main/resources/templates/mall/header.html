@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Mall</title>
+    <title>Card Mall</title>
     
     <!-- CSS -->
+	<link rel="stylesheet" th:href="@{/mall/styles/index.css}" />
     <link rel="stylesheet" th:href="@{/mall/styles/header.css}">
 	<link rel="stylesheet" th:href="@{/mall/css/swiper-bundle.min.css}">
     <link rel="stylesheet" th:href="@{/mall/css/iconfont.css}">
     <link rel="stylesheet" th:href="@{/mall/css/common.css}">
     <link rel="stylesheet" th:href="@{'/mall/styles/'+${path}+'.css'}">
 	<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert2/sweetalert2.min.css}"/>
-	<meta name="keywords" content="Car Mall, car-mall"/>
+
+	<meta name="keywords" content="Card Mall, card-mall"/>
 	<meta name="description" content="car-mall"/>
 	
     <!-- Boxicons -->
@@ -25,8 +27,8 @@
         <a th:href="@{/index}" class="header-logo">Card<span>Some</span></a>
         <ul class="header-navbar">
             <li><a th:href="@{/index}" class="active">Home</a></li>
-            <li><a th:href="@{/about}">About</a></li>
-            <li><a th:href="@{/buy}">Buy</a></li>
+
+            <li><a th:href="@{/location}">Location</a></li>
             <li>
 				<th:block th:if="${session.CarBMallUser==null}">
 	                <a href="#">Account <i class='bx bx-caret-down'></i></a>
@@ -86,7 +88,7 @@
 			</th:block>				
 			
 			<form action="#" th:action="@{/search}" method="get">
-				<input type="search" name="query" class="search-data" placeholder="Search here..." required>
+				<input type="search" name="keyword" class="search-data" placeholder="Search here..." required>
 				<button type="submit" class="bx bx-search" id="search-icon"></button>
 			</form>
     	</ul>	

@@ -1,7 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="mall/header::head-fragment('Car Mall-Homepage','index')">
+<head th:replace="mall/header::head-fragment('Card Mall-Homepage','index')">
+    <link rel="stylesheet" th:href="@{/mall/styles/index.css}" />
+    <style>
+        /* 修复 NEW 部分的对齐问题 */
+        #flash ul {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding-left: 0;
+            margin-left: 20px; /* 向右移动 */
+        }
+
+        #flash ul li {
+            list-style: none;
+            flex: 0 0 auto;
+            text-align: center;
+        }
+
+        #flash ul li img {
+            width: 300px !important;
+            height: 150px !important;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* 可选：如果想要更多的右移效果 */
+        #flash {
+            padding-left: 40px;
+        }
+    </style>
 </head>
 <body>
 <header th:replace="mall/header::header-fragment"></header>
@@ -18,7 +47,7 @@
                             <dt><a href="#"><th:block th:text="${secondLevelCategory.categoryName}"></th:block></a></dt>
                             <dd>
                                 <th:block th:each="thirdLevelCategory : ${secondLevelCategory.thirdLevelCategoryVOS}">
-                                <em><a href="#"th:href="@{'/search?carsCategoryId='+${thirdLevelCategory.categoryId}}">
+                                <em><a href="#" th:href="@{'/search?carsCategoryId='+${thirdLevelCategory.categoryId}}">
                                     <th:block th:text="${thirdLevelCategory.categoryName}"></th:block>
                                 </a></em>
                                 </th:block>
@@ -30,37 +59,56 @@
             </div>
             </th:block>
         </div>
+
         <div class="swiper-container fl">
             <div class="swiper-wrapper">
-
+                <!-- 非空情况：多个视频轮播 -->
                 <th:block th:unless="${#lists.isEmpty(carousels)}">
                     <th:block th:each="carousel : ${carousels}">
                         <div class="swiper-slide">
                             <a th:href="@{${carousel.redirectUrl}}">
-                                <img th:src="@{${carousel.carouselUrl}}" alt="">
+                                <video th:src="@{${carousel.carouselUrl}}"
+                                       autoplay muted playsinline
+                                       style="width: 100%; height: auto;">
+                                    Your browser does not support the video tag.
+                                </video>
                             </a>
                         </div>
                     </th:block>
                 </th:block>
 
+                <!-- 空轮播备用默认视频：本地演示用 -->
                 <th:block th:if="${#lists.isEmpty(carousels)}">
                     <div class="swiper-slide">
-                        <img src="./mall/image/swiper/banner01.jpg" alt="">
+                        <video src="/videos/movie480_vp9.webm"
+                               autoplay muted playsinline
+                               style="width: 100%; height: auto;">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                     <div class="swiper-slide">
-                        <img src="./mall/image/swiper/banner02.jpg" alt="">
+                        <video src="/videos/movie480_vp9.webm"
+                               autoplay muted playsinline
+                               style="width: 100%; height: auto;">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                     <div class="swiper-slide">
-                        <img src="./mall/image/swiper/banner03.jpg" alt="">
+                        <video src="/videos/movie480_vp9.webm"
+                               autoplay muted playsinline
+                               style="width: 100%; height: auto;">
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                 </th:block>
             </div>
+
+            <!-- Swiper 控件 -->
             <div class="swiper-pagination"></div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
         </div>
     </div>
-
 
     <div id="flash">
         <h2>NEW</h2>
@@ -70,7 +118,7 @@
                 <th:block th:each="newCars : ${newCars}">
                     <li>
                         <a th:href="@{'/cars/detail/'+${newCars.carsId}}">
-                            <img th:src="@{${newCars.carsCoverImg}}" th:alt="${newCars.carsName}">
+                            <img th:src="@{${newCars.carsCoverImg}}" th:alt="${newCars.carsName}" style="margin: 30px auto 10px; width: 1000px !important; height: 150px;">
                             <p class="name" th:text="${newCars.carsName}">CarBMall</p>
                             <p class="discount" th:text="${newCars.carsIntro}">CarBMall</p>
                             <p class="item_price" th:text="${newCars.sellingPrice}">CarBMall</p>
@@ -83,7 +131,7 @@
 
     <div id="recommend">
         <h2>RECOMMEND</h2>
-        <a href="##" class="more">查看更多>></a>
+        <a href="##" class="more">more>></a>
         <ul>
             <!-- 已配置推荐商品则显示配置内容 -->
             <th:block th:unless="${#lists.isEmpty(recommendCars)}">
@@ -93,13 +141,13 @@
                             <div class="info discount" th:text="${recommendCars.tag}">
                                 NEW
                             </div>
-                            <img th:src="@{${recommendCars.carsCoverImg}}" th:alt="${recommendCars.carsName}">
+                            <img th:src="@{${recommendCars.carsCoverImg}}" th:alt="${recommendCars.carsName}" style="width: 1000px !important; height: 150px;">
                             <p class="name" th:text="${recommendCars.carsName}">CarBMall</p>
                             <p class="item_price" th:text="${recommendCars.sellingPrice}">CarBMall</p>
-                            <p class="counter">猜你喜欢</p>
+                            <p class="counter">You may also like</p>
                             <div class="comment">
-                                <p>新蜂精选</p>
-                                <p>好物也可以不贵</p>
+                                <p>Popular choice</p>
+                                <p>Good games don't waste time</p>
                             </div>
                         </a>
                     </li>

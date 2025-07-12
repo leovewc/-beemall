@@ -47,4 +47,9 @@ public class IndexController {
         request.setAttribute("recommendCars", recommendCars);
         return "mall/index";
     }
+
+    @GetMapping("/location")
+    public String locationPage() {
+        return "mall/location";
+    }
 }

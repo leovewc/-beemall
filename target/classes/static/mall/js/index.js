@@ -1,21 +1,45 @@
 var carbSwiper = new Swiper('.swiper-container', {
-    // Set autoplay
-    autoplay: {
-        delay: 2000,
-        disableOnInteraction: false
-    },
-    // Set infinite loop
     loop: true,
-    // Set pagination indicator
+    autoplay: false, // 我们自己控制 autoplay
     pagination: {
         el: '.swiper-pagination',
     },
-    // Set navigation buttons
     navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
     }
 });
+
+const videos = document.querySelectorAll('.swiper-slide video');
+let slideTimer = null;
+
+// 播放当前 slide 的视频，并在 10 秒后切换
+function playAndScheduleNext() {
+    videos.forEach(v => {
+        v.pause();
+        v.currentTime = 0;
+    });
+
+    const current = document.querySelector('.swiper-slide-active video');
+    if (current) {
+        current.play();
+
+        if (slideTimer) clearTimeout(slideTimer); // 清除旧计时器
+
+        slideTimer = setTimeout(() => {
+            carbSwiper.slideNext();
+        }, 10000); // 10秒
+    }
+}
+
+// 初始化时播放第一个
+playAndScheduleNext();
+
+// 每次滑动结束时播放当前
+carbSwiper.on('slideChangeTransitionEnd', () => {
+    playAndScheduleNext();
+});
+
 
 $('.all-sort-list > .item').hover(function () {
     var eq = $('.all-sort-list > .item').index(this),
