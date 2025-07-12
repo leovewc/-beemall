@@ -73,6 +73,19 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- 下面是你需要新增的 Compiler Plugin -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version>
+              <configuration>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+                <!-- 如果你的本地 JDK 是 9+，也可以改为：<release>8</release> -->
+              </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>

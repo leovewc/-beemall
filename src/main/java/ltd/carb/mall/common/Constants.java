@@ -4,7 +4,7 @@ package ltd.carb.mall.common;
 
 public class Constants {
 
-    public final static String FILE_UPLOAD_DIC = "C:\\Users\\WWN\\Desktop\\Programming Elective II (1)\\Spring Project\\car-mall\\src\\main\\resources\\upload";
+    public final static String FILE_UPLOAD_DIC = "D:\\develop\\project\\MobileWeb\\car-mall\\src\\main\\resources\\upload";
     public final static int INDEX_CAROUSEL_NUMBER = 5;
 
     public final static int INDEX_CATEGORY_NUMBER = 10;

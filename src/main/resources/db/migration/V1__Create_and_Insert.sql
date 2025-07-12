@@ -222,14 +222,14 @@ CREATE TABLE `tb_carb_mall_cars_info`  (
 -- Compact cars
 INSERT INTO `tb_carb_mall_cars_info` (cars_name, cars_intro, cars_category_id, cars_cover_img, cars_carousel, cars_detail_content, original_price, selling_price, stock_num, tag, cars_sell_status, create_user)
 VALUES
-('Toyota Corolla', 'Toyota Compact Car', 37, '/images/toyota_corolla.jpg', '/images/toyota_corolla_1.jpg,/images/toyota_corolla_2.jpg', 'The Toyota Corolla is a compact car.', 20000, 18000, 50, 'Compact', 0,1),
+('Toyota Corolla', 'Toyota Compact Car', 37, '/images/game1.png', '/images/toyota_corolla_1.jpg,/images/toyota_corolla_2.jpg', 'The Toyota Corolla is a compact car.', 20000, 18000, 50, 'Compact', 0,1),
 ('Honda Civic', 'Honda Compact Car', 38, '/images/honda_civic.jpg', '/images/honda_civic_1.jpg,/images/honda_civic_2.jpg', 'The Honda Civic is a compact car.', 22000, 20000, 50, 'Compact', 0, 1),
 ('Ford Focus', 'Ford Compact Car', 39, '/images/ford_focus.jpg', '/images/ford_focus_1.jpg,/images/ford_focus_2.jpg', 'The Ford Focus is a compact car.', 21000, 19000, 50, 'Compact', 0, 1);
 
 -- Mid-size cars
 INSERT INTO `tb_carb_mall_cars_info` (cars_name, cars_intro, cars_category_id, cars_cover_img, cars_carousel, cars_detail_content, original_price, selling_price, stock_num, tag, cars_sell_status, create_user)
 VALUES
-('Toyota Camry', 'Toyota Mid-size Car', 40, '/images/toyota_camry.jpg', '/images/toyota_camry_1.jpg,/images/toyota_camry_2.jpg', 'The Toyota Camry is a mid-size car.', 25000, 23000, 50, 'Mid-size', 0, 1),
+('Toyota Camry', 'long long detail', 40, '/images/game1.png', '/images/game1.png,/images/toyota_camry_2.jpg', 'The Toyota Camry is a mid-size car.', 25000, 23000, 50, 'Mid-size', 0, 1),
 ('Honda Accord', 'Honda Mid-size Car', 41, '/images/honda_accord.jpg', '/images/honda_accord_1.jpg,/images/honda_accord_2.jpg', 'The Honda Accord is a mid-size car.', 26000, 24000, 50, 'Mid-size', 0, 1),
 ('Ford Fusion', 'Ford Mid-size Car', 42, '/images/ford_fusion.jpg', '/images/ford_fusion_1.jpg,/images/ford_fusion_2.jpg', 'The Ford Fusion is a mid-size car.', 27000, 25000, 50, 'Mid-size', 0, 1);
 
@@ -307,19 +307,19 @@ CREATE TABLE `tb_carb_mall_index_config`  (
 -- ----------------------------
 -- Inserting data into tb_carb_mall_index_config table
 INSERT INTO `tb_carb_mall_index_config` (config_name, config_type, cars_id, redirect_url, config_rank, is_deleted, create_time, create_user, update_time, update_user) VALUES
-('HOT SEARCH McLaren Senna', 1, 10925, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
-('HOT SEARCH Lamborghini Veneno', 2, 10924, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT SEARCH McLaren Senna', 1, 10925, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT SEARCH Lamborghini Veneno', 2, 10924, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
 -- 热销商品
-('HOT Ferrari LaFerrari', 3, 10923, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
-('HOT McLaren P1', 3, 10922, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
-('HOT Lamborghini Aventador', 3, 10921, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
-('HOT Ferrari Portofino', 3, 10920, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
-('HOT McLaren 720S', 3, 10919, '/images/toyota_corolla.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT Ferrari LaFerrari', 3, 10923, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT McLaren P1', 3, 10922, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT Lamborghini Aventador', 3, 10921, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT Ferrari Portofino', 3, 10920, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('HOT McLaren 720S', 3, 10919, '/images/toyota_camry.jpg', 10, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
 -- 新品上线
 ('NEW Toyota Corolla', 4, 10896, '/images/toyota_camry.jpg', 40, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
 ('NEW Honda Civic', 4, 10897, '/images/toyota_camry.jpg', 40, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
 ('NEW Ford Focus', 4, 10898, '/images/toyota_camry.jpg', 40, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
-('NEW Toyota Camry', 4, 10899, '/images/toyota_camry.jpg', 40, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
+('NEW Toyota Camry', 4, 10003, '/images/game1.png', 40, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
 ('NEW Honda Accord', 4, 10900, '/images/toyota_camry.jpg', 40, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
 -- 为你推荐
 ('RECOMMEND BMW X5', 5, 10905, '/images/bmw_x1.jpg', 70, 0, '2024-06-24 18:57:00', 1, '2024-06-24 18:57:00', 1),
