@@ -62,7 +62,7 @@
             <th:block th:each="cars : ${pageResult.list}">
                 <div class="item_card_frame">
                     <div class="item_card"><a th:href="@{'/cars/detail/'+${cars.carsId}}" target="_blank"><img
-                            th:src="@{${cars.carsCoverImg}}" th:alt="${cars.carsName}"></a></div>
+                            th:src="@{${cars.carsCoverImg}}" th:alt="${cars.carsName}" style="width: 1500px !important; height: 150px;"></a></div>
                     <div class="item_brand"><a th:href="@{'/cars/detail/'+${cars.carsId}}" target="_blank"
                                                th:text="${cars.carsName}">carb.ltd</a></div>
                     <div class="item_sub_intro" th:text="${cars.carsIntro}">carb.ltd</div>

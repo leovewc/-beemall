@@ -17,8 +17,8 @@
 }
 
 .all-sort-list .item h3 {
-    height: 30px;
-    line-height: 45px;
+    height: 49px;
+    line-height: 49px;
     font-size: 15px;
     font-weight: normal;
     width: 199px;
@@ -150,6 +150,7 @@
     height: 40px;
     padding: 0 30px;
     font-size: 14px;
+    line-height: 1.4;         /* ✅ 增加行高，避免文字被压 */
 }
 
 #content #banner #cate_menu > ul > li:last-of-type {
