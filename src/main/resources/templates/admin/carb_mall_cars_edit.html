@@ -103,17 +103,13 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-group">
-                                    <div class="col-sm-4">
-                                        <th:block th:if="${null == cars}">
-                                            <img id="carsCoverImg" src="/admin/dist/img/img-upload.png"
-                                                 style="height: 64px;width: 64px;">
-                                        </th:block>
-                                        <th:block th:unless="${null == cars}">
-                                            <img id="carszCoverImg" th:src="${cars.carsCoverImg}"
-                                                 style="width:160px ;height: 160px;display:block;">
-                                        </th:block>
-                                    </div>
+                                  <div class="col-sm-4">
+                                    <img id="carsCoverImg"
+                                         th:src="${cars != null and cars.carsCoverImg != null ? cars.carsCoverImg : '/admin/dist/img/img-upload.png'}"
+                                         style="width:160px ;height: 160px;display:block;">
+                                  </div>
                                 </div>
+
                                 <br>
                                 <div class="form-group">
                                     <div class="col-sm-4">
